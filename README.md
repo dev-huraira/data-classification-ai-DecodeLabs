@@ -316,5 +316,5 @@ because .pkl files will be missing.
 - Program : DecodeLabs Industrial Training
 - Batch   : 2026
 - Project : Project 2 - Data Classification Using AI
-- Contact : decodelabs.tech@gmail.com
-- Website : www.decodelabs.tech
+- Contact : huraria3076@gmail.com
+- Website : https://devhuraira.vercel.app/
