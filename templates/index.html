@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Classification Using AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: #0A0A0A;
+            color: #CCCCCC;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #111111;
+            padding: 16px 24px;
+            border-bottom: 1px solid #2A2A2A;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        header .left {
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        header .right {
+            color: #666666;
+        }
+
+        main {
+            margin-top: 57px;
+            padding: 24px;
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .columns {
+            display: flex;
+            gap: 24px;
+            flex: 1;
+        }
+
+        .left-column {
+            width: 40%;
+        }
+
+        .right-column {
+            width: 60%;
+        }
+
+        .left-column h1 {
+            color: #FFFFFF;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .left-column .subtitle {
+            color: #666666;
+            margin-bottom: 24px;
+        }
+
+        .form-panel {
+            background: #111111;
+            border: 1px solid #2A2A2A;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .form-panel h2 {
+            color: #4A90D9;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            color: #CCCCCC;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            background: #1A1A1A;
+            border: 1px solid #333333;
+            color: #FFFFFF;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 16px;
+        }
+
+        button.predict-btn {
+            width: 100%;
+            background: #4A90D9;
+            color: #FFFFFF;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        button.predict-btn:hover {
+            background: #357ABD;
+        }
+
+        #result-box {
+            display: none;
+            background: #0D2A1A;
+            border: 1px solid #00FF88;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        #result-box .emoji {
+            font-size: 48px;
+            text-align: center;
+        }
+
+        #result-box .species {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00FF88;
+            text-align: center;
+        }
+
+        #result-box .label {
+            color: #666666;
+            text-align: center;
+        }
+
+        #result-box .divider {
+            border-top: 1px solid #2A2A2A;
+            margin: 16px 0;
+        }
+
+        #result-box .summary {
+            color: #666666;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .metrics-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .metric-card {
+            flex: 1;
+            background: #111111;
+            border: 1px solid #2A2A2A;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-card .value {
+            color: #FFFFFF;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .metric-card .label {
+            color: #666666;
+            font-size: 12px;
+        }
+
+        .info-panel {
+            background: #111111;
+            border: 1px solid #2A2A2A;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .info-panel h3 {
+            color: #4A90D9;
+            margin-bottom: 16px;
+        }
+
+        .confusion-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .confusion-table th,
+        .confusion-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #2A2A2A;
+        }
+
+        .confusion-table th {
+            color: #CCCCCC;
+        }
+
+        .confusion-table .diagonal {
+            background: #0D2A1A;
+            color: #00FF88;
+        }
+
+        .confusion-table .off-diagonal {
+            background: #2A0D0D;
+            color: #FF6B35;
+        }
+
+        .model-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 12px;
+        }
+
+        .model-info-row .row-label {
+            color: #666666;
+        }
+
+        .model-info-row .row-value {
+            color: #FFFFFF;
+        }
+
+        .model-info-row.odd {
+            background: #111111;
+        }
+
+        .model-info-row.even {
+            background: #1A1A1A;
+        }
+
+        footer {
+            color: #444444;
+            text-align: center;
+            padding: 16px;
+            border-top: 1px solid #2A2A2A;
+            font-size: 12px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="left">🌸 DecoBot Classifier</div>
+        <div class="right">DecodeLabs 2026</div>
+    </header>
+
+    <main>
+        <div class="columns">
+            <div class="left-column">
+                <h1>Data Classification Using AI</h1>
+                <p class="subtitle">Project 2 | KNN Algorithm | Iris Dataset</p>
+
+                <div class="form-panel">
+                    <h2>[ INPUT MEASUREMENTS ]</h2>
+
+                    <label for="sepal_length">Sepal Length (cm)</label>
+                    <input type="number" step="0.1" id="sepal_length" placeholder="4.0 - 8.0" required>
+
+                    <label for="sepal_width">Sepal Width (cm)</label>
+                    <input type="number" step="0.1" id="sepal_width" placeholder="2.0 - 5.0" required>
+
+                    <label for="petal_length">Petal Length (cm)</label>
+                    <input type="number" step="0.1" id="petal_length" placeholder="1.0 - 7.0" required>
+
+                    <label for="petal_width">Petal Width (cm)</label>
+                    <input type="number" step="0.1" id="petal_width" placeholder="0.1 - 3.0" required>
+
+                    <button type="button" class="predict-btn" id="predict-btn">[ PREDICT SPECIES ]</button>
+
+                    <div id="result-box">
+                        <div class="emoji" id="result-emoji"></div>
+                        <div class="species" id="result-species"></div>
+                        <div class="label">PREDICTED SPECIES</div>
+                        <div class="divider"></div>
+                        <div class="summary" id="result-summary"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="metrics-row">
+                    <div class="metric-card">
+                        <div class="value">{{ "%.4f"|format(results.f1_score) }}</div>
+                        <div class="label">F1 SCORE</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">KNN (K=5)</div>
+                        <div class="label">ALGORITHM</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">150 Samples</div>
+                        <div class="label">DATASET SIZE</div>
+                    </div>
+                </div>
+
+                <div class="info-panel">
+                    <h3>[ CONFUSION MATRIX ]</h3>
+                    <table class="confusion-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                {% for name in results.class_names %}
+                                <th>{{ name }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in range(results.class_names|length) %}
+                            <tr>
+                                <th>{{ results.class_names[i] }}</th>
+                                {% for j in range(results.class_names|length) %}
+                                <td class="{% if i == j %}diagonal{% else %}off-diagonal{% endif %}">
+                                    {{ results.confusion_matrix[i][j] }}
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-panel">
+                    <h3>[ MODEL INFORMATION ]</h3>
+                    <div class="model-info-row odd">
+                        <span class="row-label">Algorithm</span>
+                        <span class="row-value">K-Nearest Neighbors</span>
+                    </div>
+                    <div class="model-info-row even">
+                        <span class="row-label">K Value</span>
+                        <span class="row-value">5 (Optimal Elbow Point)</span>
+                    </div>
+                    <div class="model-info-row odd">
+                        <span class="row-label">Dataset</span>
+                        <span class="row-value">Iris Benchmark</span>
+                    </div>
+                    <div class="model-info-row even">
+                        <span class="row-label">Total Samples</span>
+                        <span class="row-value">150 (Balanced)</span>
+                    </div>
+                    <div class="model-info-row odd">
+                        <span class="row-label">Features</span>
+                        <span class="row-value">4 Dimensions</span>
+                    </div>
+                    <div class="model-info-row even">
+                        <span class="row-label">Classes</span>
+                        <span class="row-value">3 Species</span>
+                    </div>
+                    <div class="model-info-row odd">
+                        <span class="row-label">Training Set</span>
+                        <span class="row-value">120 samples (80%)</span>
+                    </div>
+                    <div class="model-info-row even">
+                        <span class="row-label">Testing Set</span>
+                        <span class="row-value">30 samples (20%)</span>
+                    </div>
+                    <div class="model-info-row odd">
+                        <span class="row-label">Scaling</span>
+                        <span class="row-value">StandardScaler</span>
+                    </div>
+                    <div class="model-info-row even">
+                        <span class="row-label">F1 Score</span>
+                        <span class="row-value">{{ "%.4f"|format(results.f1_score) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            DecodeLabs Industrial Training | Batch 2026 | Project 2: Data Classification Using AI
+        </footer>
+    </main>
+
+    <script>
+        document.getElementById('predict-btn').addEventListener('click', function() {
+            var sepalLength = document.getElementById('sepal_length').value;
+            var sepalWidth = document.getElementById('sepal_width').value;
+            var petalLength = document.getElementById('petal_length').value;
+            var petalWidth = document.getElementById('petal_width').value;
+
+            if (!sepalLength || !sepalWidth || !petalLength || !petalWidth) {
+                alert('Please fill all 4 measurements');
+                return;
+            }
+
+            var btn = document.getElementById('predict-btn');
+            btn.textContent = '[ PREDICTING... ]';
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    sepal_length: parseFloat(sepalLength),
+                    sepal_width: parseFloat(sepalWidth),
+                    petal_length: parseFloat(petalLength),
+                    petal_width: parseFloat(petalWidth)
+                })
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Prediction failed');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                document.getElementById('result-emoji').textContent = data.emoji;
+                document.getElementById('result-species').textContent = data.species;
+                document.getElementById('result-summary').textContent =
+                    'Sepal: ' + data.input.sepal_length + 'cm × ' + data.input.sepal_width +
+                    'cm | Petal: ' + data.input.petal_length + 'cm × ' + data.input.petal_width + 'cm';
+                document.getElementById('result-box').style.display = 'block';
+            })
+            .catch(function() {
+                alert('Prediction failed. Try again.');
+            })
+            .finally(function() {
+                btn.textContent = '[ PREDICT SPECIES ]';
+            });
+        });
+    </script>
+</body>
+</html>
