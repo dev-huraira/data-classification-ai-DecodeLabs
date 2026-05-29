@@ -18,17 +18,19 @@ the AI tells you which species it is out of 3 types.
 ## 🤖 What This Project Does
 
 ### The Simple Flow
+```
 User enters 4 measurements
-↓
+         ↓
 Flask receives the data
-↓
+         ↓
 StandardScaler normalizes the numbers
-↓
+         ↓
 KNN Algorithm finds 5 nearest neighbors
-↓
+         ↓
 Majority vote decides the species
-↓
+         ↓
 Result shown on screen
+```
 
 ### What Each File Does
 
@@ -104,6 +106,7 @@ RIGHT SIDE:
 ---
 
 ## 📁 Project Structure
+```
 data-classification-ai/
 ├── model.py              ← Train and save ML model
 ├── app.py                ← Flask web server
@@ -115,6 +118,7 @@ data-classification-ai/
 ├── README.md             ← This file
 └── templates/
 └── index.html        ← Web UI
+```
 
 ---
 
@@ -125,23 +129,31 @@ data-classification-ai/
 - Download Python 3.8 or higher from python.org
 - During installation check "Add Python to PATH"
 - Verify installation:
+```
 python --version
+```
 
 ### Step 2 — Get the Project
 
 Option A — Clone from GitHub:
+```
 git clone https://github.com/dev-huraira/data-classification-ai
 cd data-classification-ai
+```
 
 Option B — Copy folder manually:
 - Copy the entire project folder to your system
 - Open terminal inside that folder
 
 ### Step 3 — Install Libraries
+```
 pip install flask scikit-learn numpy
+```
 
 ### Step 4 — Train the Model (REQUIRED)
+```
 python model.py
+```
 
 This step is MANDATORY on every new system because:
 - model.pkl is in .gitignore
@@ -151,26 +163,35 @@ This step is MANDATORY on every new system because:
 - They are created fresh when you run model.py
 
 You will see this output:
+```
 ==================================================
 MODEL TRAINING SUMMARY
+==================================================
 Training Size: 120
 Testing Size: 30
 F1 Score: 0.9667
 Confusion Matrix: ...
 Classification Report: ...
+==================================================
 Model saved successfully
+```
 
 ### Step 5 — Start the Web Server
+```
 python app.py
+```
 
 You will see:
-
-Running on http://127.0.0.1:5000
-Debug mode: on
+```
+* Running on http://127.0.0.1:5000
+* Debug mode: on
+```
 
 
 ### Step 6 — Open in Browser
+```
 http://localhost:5000
+```
 
 ---
 
@@ -178,18 +199,22 @@ http://localhost:5000
 
 Every time you move to a new computer follow
 these steps in this exact order:
+```
 =======================================
-QUICK START — NEW SYSTEM
-
-pip install flask scikit-learn numpy
-python model.py
-python app.py
-open http://localhost:5000
-
-ALWAYS run model.py BEFORE app.py
-.pkl files are NOT on GitHub
-They are created by model.py
+  QUICK START — NEW SYSTEM
 =======================================
+
+  1. pip install flask scikit-learn numpy
+  2. python model.py
+  3. python app.py
+  4. open http://localhost:5000
+
+  ALWAYS run model.py BEFORE app.py
+  .pkl files are NOT on GitHub
+  They are created by model.py
+
+=======================================
+```
 
 ---
 
@@ -255,12 +280,16 @@ Expected Result: 🌼 VIRGINICA
 ---
 
 ## ⚠️ Important Rules
+```
 ALWAYS run in this exact order:
-python model.py    ← FIRST (creates .pkl files)
-python app.py      ← SECOND (starts web server)
+
+   python model.py    ← FIRST (creates .pkl files)
+   python app.py      ← SECOND (starts web server)
+
 Never run app.py before model.py
 on a fresh system. It will crash
 because .pkl files will be missing.
+```
 
 ---
 
